@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uso de Drones na Agricultura</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --soil:      #1f2e1c;
+    --soil-2:    #2e4127;
+    --crop:      #4c7a3f;
+    --crop-lt:   #7fae5f;
+    --wheat:     #d9a441;
+    --sky:       #3e7ca6;
+    --paper:     #f7f2e5;
+    --paper-2:   #efe7d3;
+    --ink:       #1b1b16;
+    --line:      #d8cdae;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior:smooth; }
+
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Space Grotesk', sans-serif;
+    line-height:1.6;
+  }
+
+  h1, h2, h3 { font-family:'Fraunces', serif; font-weight:600; color:var(--soil); }
+
+  a { color:inherit; }
+
+  img, svg { display:block; max-width:100%; }
+
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 24px; }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(31,46,28,0.94);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px;
+  }
+  .brand{
+    color:var(--paper); font-family:'Fraunces', serif; font-weight:600;
+    font-size:18px; letter-spacing:0.2px; display:flex; align-items:center; gap:8px;
+  }
+  .brand svg{ width:22px; height:22px; }
+  .navlinks{ display:flex; gap:28px; list-style:none; }
+  .navlinks a{
+    color:#d9d3bd; text-decoration:none; font-size:14.5px; font-weight:500;
+    transition:color .2s ease;
+  }
+  .navlinks a:hover{ color:var(--wheat); }
+  .navtoggle{ display:none; }
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    position:relative;
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(217,164,65,0.25), transparent 60%),
+      linear-gradient(180deg, var(--soil) 0%, var(--soil-2) 65%, #375c2e 100%);
+    color:var(--paper);
+    overflow:hidden;
+    padding-bottom:40px;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items:center;
+    gap:32px;
+    padding:64px 24px 20px;
+  }
+  .hero-copy .kicker{
+    font-size:14px; color:var(--crop-lt); font-weight:500;
+    display:flex; align-items:center; gap:10px; margin-bottom:18px;
+  }
+  .hero-copy .kicker .dot{
+    width:7px; height:7px; border-radius:50%; background:var(--wheat);
+    box-shadow:0 0 0 4px rgba(217,164,65,0.18);
+  }
+  .hero-copy h1{
+    font-size:clamp(34px, 5vw, 54px);
+    line-height:1.08;
+    max-width:12ch;
+    color:var(--paper);
+  }
+  .hero-copy p{
+    margin-top:20px; max-width:46ch; color:#e6e0cb; font-size:17px;
+  }
+  .hero-hud{
+    margin-top:32px;
+    display:grid; grid-template-columns:repeat(3,1fr);
+    max-width:420px; border-top:1px solid rgba(255,255,255,0.15);
+    padding-top:18px;
+  }
+  .hero-hud div{ padding-right:14px; }
+  .hero-hud .num{ font-size:20px; font-weight:600; color:var(--wheat); }
+  .hero-hud .lbl{ font-size:12.5px; color:#c9c2a8; margin-top:2px; }
+
+  .hero-art{ position:relative; }
+  .hero-art svg{ width:100%; height:auto; }
+
+  /* ---------- SECTIONS ---------- */
+  section{ padding:88px 0; border-bottom:1px solid var(--line); }
+  section:last-of-type{ border-bottom:none; }
+
+  .eyebrow-row{
+    display:flex; align-items:baseline; justify-content:space-between;
+    gap:24px; margin-bottom:36px; flex-wrap:wrap;
+  }
+  .eyebrow-row h2{ font-size:clamp(26px,3.4vw,36px); max-width:16ch; }
+  .eyebrow-row .idx{
+    font-family:'Space Grotesk', sans-serif; color:var(--crop);
+    font-size:14px; font-weight:600; white-space:nowrap;
+  }
+
+  /* Sobre section: split layout */
+  .about-split{
+    display:grid; grid-template-columns: 0.95fr 1.05fr; gap:48px; align-items:start;
+  }
+  .about-split p{ font-size:17px; max-width:56ch; }
+  .about-split p + p{ margin-top:16px; }
+  .definition{
+    background:var(--soil); color:var(--paper);
+    border-radius:4px; padding:28px 30px; position:relative;
+  }
+  .definition::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--wheat);
+  }
+  .definition strong{ color:var(--wheat); display:block; margin-bottom:10px; font-size:15px; }
+  .definition p{ color:#e6e0cb; font-size:15.5px; }
+
+  /* Componentes: rows with side accent color, not a card-kit */
+  .parts{ display:flex; flex-direction:column; }
+  .part{
+    display:grid; grid-template-columns: 64px 1fr 2fr;
+    gap:24px; align-items:flex-start;
+    padding:26px 0; border-top:1px solid var(--line);
+  }
+  .part:last-child{ border-bottom:1px solid var(--line); }
+  .part .ico{ width:44px; height:44px; }
+  .part h3{ font-size:19px; }
+  .part p{ font-size:15.5px; color:#3c3b30; }
+  .part .tag{
+    font-size:12px; font-weight:600; letter-spacing:0.03em; color:var(--sky);
+  }
+
+  /* Aplicações: illustrated grid */
+  .apps{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:18px;
+  }
+  .app-card{
+    background:var(--paper-2); border-radius:6px; overflow:hidden;
+    border:1px solid var(--line);
+  }
+  .app-card .art{
+    aspect-ratio:4/3; background:linear-gradient(160deg,#dfe9d4,#c7dcc0);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .app-card .art svg{ width:58%; height:58%; }
+  .app-card .body{ padding:18px 18px 22px; }
+  .app-card h3{ font-size:16.5px; margin-bottom:8px; }
+  .app-card p{ font-size:14px; color:#4a4938; }
+
+  /* Perguntas: activity log style */
+  .perguntas-wrap{
+    background:var(--soil); color:var(--paper); border-radius:6px; padding:8px 0;
+    margin: 0;
+  }
+  section#perguntas{ background:var(--paper-2); }
+  .log{ counter-reset:q; }
+  .qitem{
+    counter-increment:q;
+    display:grid; grid-template-columns:56px 1fr; gap:22px;
+    padding:30px 0; border-top:1px dashed #b9ae8c;
+  }
+  .qitem:first-child{ border-top:none; }
+  .qitem .qn{
+    font-family:'Fraunces', serif; font-size:30px; color:var(--crop); font-weight:600;
+  }
+  .qitem h3{ font-size:17.5px; margin-bottom:12px; line-height:1.4; }
+  .qitem p{ font-size:15.5px; color:#3c3b30; max-width:64ch; }
+
+  /* Benefícios */
+  section#beneficios{
+    background:linear-gradient(180deg, var(--soil-2), var(--soil));
+    color:var(--paper); border-bottom:none;
+  }
+  #beneficios .eyebrow-row h2{ color:var(--paper); }
+  #beneficios .eyebrow-row .idx{ color:var(--wheat); }
+  .stat-row{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+    background:rgba(255,255,255,0.12); border-radius:8px; overflow:hidden;
+  }
+  .stat{ background:#24361f; padding:32px 26px; }
+  .stat h3{ color:var(--wheat); font-size:16.5px; margin-bottom:10px; }
+  .stat p{ color:#d9d3bd; font-size:14.5px; }
+
+  .reveal-box{ margin-top:44px; text-align:center; }
+  .btn{
+    appearance:none; border:1px solid var(--wheat); background:transparent;
+    color:var(--wheat); font-family:'Space Grotesk',sans-serif; font-weight:600;
+    font-size:15px; padding:14px 28px; border-radius:999px; cursor:pointer;
+    transition:background .2s ease, color .2s ease;
+  }
+  .btn:hover{ background:var(--wheat); color:var(--soil); }
+  #mensagem{
+    margin-top:22px; font-size:15.5px; color:#e6e0cb; min-height:24px;
+    opacity:0; transform:translateY(6px); transition:opacity .35s ease, transform .35s ease;
+  }
+  #mensagem.show{ opacity:1; transform:translateY(0); }
+
+  footer{
+    background:var(--soil); color:#a9a48c; text-align:center;
+    padding:30px 24px; font-size:13.5px;
+  }
+  footer strong{ color:var(--paper); }
+
+  @media (max-width: 860px){
+    .hero-grid{ grid-template-columns:1fr; padding-top:120px; }
+    .hero-art{ order:-1; max-width:280px; margin:0 auto 12px; }
+    .about-split{ grid-template-columns:1fr; }
+    .apps{ grid-template-columns:repeat(2,1fr); }
+    .stat-row{ grid-template-columns:1fr; }
+    .part{ grid-template-columns:44px 1fr; }
+    .part > p.desc{ grid-column:1 / -1; }
+  }
+
+  @media (max-width: 600px){
+    .navlinks{ display:none; }
+    .apps{ grid-template-columns:1fr; }
+    section{ padding:64px 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#d9a441" stroke-width="1.6"/><path d="M12 7v10M7 12h10" stroke="#d9a441" stroke-width="1.6"/></svg>
+      Uso de Drones na Agricultura
+    </div>
+    <ul class="navlinks">
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#componentes">Componentes</a></li>
+      <li><a href="#aplicacoes">Aplicações</a></li>
+      <li><a href="#perguntas">Atividade</a></li>
+      <li><a href="#beneficios">Benefícios</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <div class="kicker"><span class="dot"></span> Tecnologia digital aplicada ao agronegócio</div>
+      <h1>Uso de Drones na Agricultura</h1>
+      <p>
+        Veículos Aéreos Não Tripulados sobrevoam o cultivo, leem o que os olhos não alcançam
+        e devolvem ao produtor rural dados para decidir com mais precisão — do plantio à colheita.
+      </p>
+
+      <div class="hero-hud">
+        <div><div class="num">120 ha</div><div class="lbl">cobertos por voo</div></div>
+        <div><div class="num">4K</div><div class="lbl">resolução de imagem</div></div>
+        <div><div class="num">±2 cm</div><div class="lbl">precisão de GPS</div></div>
+      </div>
+    </div>
+
+    <div class="hero-art">
+      <svg viewBox="0 0 420 340" xmlns="http://www.w3.org/2000/svg">
+        <!-- campo -->
+        <defs>
+          <linearGradient id="fieldGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#375c2e"/>
+            <stop offset="1" stop-color="#26401f"/>
+          </linearGradient>
+        </defs>
+        <rect x="0" y="230" width="420" height="110" fill="url(#fieldGrad)"/>
+        <g stroke="#4c7a3f" stroke-width="3" opacity="0.55">
+          <path d="M0 250 Q 210 235 420 250"/>
+          <path d="M0 270 Q 210 255 420 270"/>
+          <path d="M0 290 Q 210 275 420 290"/>
+          <path d="M0 310 Q 210 295 420 310"/>
+        </g>
+        <!-- linhas de varredura do drone -->
+        <g stroke="#d9a441" stroke-width="1" stroke-dasharray="4 5" opacity="0.5">
+          <line x1="70" y1="150" x2="70" y2="250"/>
+          <line x1="200" y1="120" x2="200" y2="250"/>
+          <line x1="330" y1="150" x2="330" y2="250"/>
+        </g>
+        <!-- drone -->
+        <g transform="translate(140,80)">
+          <ellipse cx="60" cy="150" rx="70" ry="10" fill="#000" opacity="0.15"/>
+          <g stroke="#e6e0cb" stroke-width="3">
+            <line x1="10" y1="10" x2="45" y2="45"/>
+            <line x1="110" y1="10" x2="75" y2="45"/>
+            <line x1="10" y1="80" x2="45" y2="55"/>
+            <line x1="110" y1="80" x2="75" y2="55"/>
+          </g>
+          <g>
+            <circle cx="10" cy="10" r="14" fill="none" stroke="#d9a441" stroke-width="2"/>
+            <circle cx="110" cy="10" r="14" fill="none" stroke="#d9a441" stroke-width="2"/>
+            <circle cx="10" cy="80" r="14" fill="none" stroke="#d9a441" stroke-width="2"/>
+            <circle cx="110" cy="80" r="14" fill="none" stroke="#d9a441" stroke-width="2"/>
+          </g>
+          <rect x="45" y="38" width="30" height="20" rx="5" fill="#f7f2e5"/>
+          <circle cx="60" cy="60" r="5" fill="#3e7ca6"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<section id="sobre">
+  <div class="wrap about-split">
+    <div>
+      <div class="eyebrow-row" style="margin-bottom:20px;">
+        <h2>O que são VANTs?</h2>
+      </div>
+      <p>
+        Os Veículos Aéreos Não Tripulados, os VANTs, são artefatos digitais físicos:
+        combinam componentes eletrônicos, mecânicos e estruturais que permitem voar e
+        executar tarefas específicas. Na agricultura, essa combinação vira uma ferramenta
+        de observação — sobrevoando plantações, identificando problemas e reunindo
+        informações sobre a área cultivada.
+      </p>
+      <p>
+        O diferencial não está apenas em voar, mas em enxergar: câmeras e sensores
+        transformam o voo em dado, e o dado em decisão para quem cuida da terra.
+      </p>
+    </div>
+    <div class="definition">
+      <strong>VANT — Veículo Aéreo Não Tripulado</strong>
+      <p>
+        Pode ser conduzido remotamente por um operador ou seguir uma rota programada
+        de forma autônoma. Equipado com sensores e câmeras, coleta informações que
+        apoiam o produtor rural na tomada de decisão sobre irrigação, pragas e manejo.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="componentes">
+  <div class="wrap">
+    <div class="eyebrow-row">
+      <h2>O que sustenta um drone em voo</h2>
+      <span class="idx">quatro sistemas, uma máquina</span>
+    </div>
+
+    <div class="parts">
+
+      <div class="part">
+        <svg class="ico" viewBox="0 0 48 48" fill="none"><rect x="8" y="8" width="32" height="32" rx="4" stroke="#3e7ca6" stroke-width="2"/><path d="M18 24h12M24 18v12" stroke="#3e7ca6" stroke-width="2"/></svg>
+        <div><div class="tag">ELETRÔNICO</div><h3>Cérebro e nervos do drone</h3></div>
+        <p class="desc">Controladores de voo, módulos GPS, sistemas de comunicação por rádio e baterias — o conjunto que processa dados e mantém o equipamento no ar e em contato com o operador.</p>
+      </div>
+
+      <div class="part">
+        <svg class="ico" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="6" stroke="#4c7a3f" stroke-width="2"/><path d="M24 6v6M24 36v6M6 24h6M36 24h6" stroke="#4c7a3f" stroke-width="2"/></svg>
+        <div><div class="tag">MECÂNICO</div><h3>Força e movimento</h3></div>
+        <p class="desc">Motores e hélices convertem energia elétrica em sustentação, permitindo decolagem, deslocamento e manobras precisas sobre o talhão.</p>
+      </div>
+
+      <div class="part">
+        <svg class="ico" viewBox="0 0 48 48" fill="none"><path d="M8 34l16-20 16 20z" stroke="#d9a441" stroke-width="2" stroke-linejoin="round"/></svg>
+        <div><div class="tag">ESTRUTURAL</div><h3>O corpo que resiste ao voo</h3></div>
+        <p class="desc">Um chassi leve e resistente sustenta todos os demais componentes, equilibrando peso e durabilidade para voos longos em campo aberto.</p>
+      </div>
+
+      <div class="part">
+        <svg class="ico" viewBox="0 0 48 48" fill="none"><rect x="10" y="16" width="28" height="18" rx="3" stroke="#1f2e1c" stroke-width="2"/><circle cx="24" cy="25" r="6" stroke="#1f2e1c" stroke-width="2"/></svg>
+        <div><div class="tag">SENSORIAL</div><h3>Os olhos sobre a lavoura</h3></div>
+        <p class="desc">Câmeras multiespectrais e sensores capturam imagens da plantação, permitindo enxergar variações que passariam despercebidas do chão.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="aplicacoes">
+  <div class="wrap">
+    <div class="eyebrow-row">
+      <h2>O que um voo pode revelar</h2>
+      <span class="idx">quatro usos no campo</span>
+    </div>
+
+    <div class="apps">
+
+      <div class="app-card">
+        <div class="art">
+          <svg viewBox="0 0 64 64" fill="none"><path d="M6 50h52M6 50c4-14 10-22 26-22s22 8 26 22" stroke="#4c7a3f" stroke-width="2.5"/><circle cx="32" cy="18" r="6" stroke="#3e7ca6" stroke-width="2.5"/></svg>
+        </div>
+        <div class="body">
+          <h3>Monitoramento</h3>
+          <p>Acompanhamento de grandes áreas de cultivo e do desenvolvimento das plantas ao longo do ciclo.</p>
+        </div>
+      </div>
+
+      <div class="app-card">
+        <div class="art">
+          <svg viewBox="0 0 64 64" fill="none"><path d="M32 10c8 12 12 18 12 26a12 12 0 1 1-24 0c0-8 4-14 12-26z" stroke="#3e7ca6" stroke-width="2.5"/></svg>
+        </div>
+        <div class="body">
+          <h3>Irrigação</h3>
+          <p>Imagens aéreas ajudam a localizar pontos da lavoura com maior necessidade de água.</p>
+        </div>
+      </div>
+
+      <div class="app-card">
+        <div class="art">
+          <svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="10" stroke="#d9a441" stroke-width="2.5"/><path d="M32 12v6M32 46v6M12 32h6M46 32h6M18 18l4 4M42 42l4 4M46 18l-4 4M22 42l-4 4" stroke="#d9a441" stroke-width="2.5"/></svg>
+        </div>
+        <div class="body">
+          <h3>Identificação de pragas</h3>
+          <p>Sinais precoces de pragas e doenças ficam visíveis antes de comprometer toda a plantação.</p>
+        </div>
+      </div>
+
+      <div class="app-card">
+        <div class="art">
+          <svg viewBox="0 0 64 64" fill="none"><rect x="10" y="10" width="44" height="44" rx="3" stroke="#1f2e1c" stroke-width="2.5"/><path d="M10 32h44M32 10v44" stroke="#1f2e1c" stroke-width="1.5" stroke-dasharray="3 3"/></svg>
+        </div>
+        <div class="body">
+          <h3>Mapeamento</h3>
+          <p>Imagens aéreas georreferenciadas apoiam o planejamento e a análise da área agrícola.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="perguntas">
+  <div class="wrap">
+    <div class="eyebrow-row">
+      <h2>Perguntas da atividade</h2>
+      <span class="idx">respostas do grupo</span>
+    </div>
+
+    <div class="log">
+
+      <div class="qitem">
+        <div class="qn">01</div>
+        <div>
+          <h3>Reúna-se com seus colegas, pesquise e explique como os drones, que possuem tecnologia digital, podem ser utilizados em diferentes funções no agronegócio.</h3>
+          <p>Os drones podem monitorar plantações, realizar mapeamentos, identificar pragas e doenças, acompanhar o crescimento das plantas e apontar áreas que precisam de irrigação ou cuidados especiais. Assim, a tecnologia digital dá ao agricultor mais informação para decidir.</p>
+        </div>
+      </div>
+
+      <div class="qitem">
+        <div class="qn">02</div>
+        <div>
+          <h3>Como a utilização dos drones impacta a eficiência e a produtividade do setor agrícola?</h3>
+          <p>O monitoramento por drones é mais rápido e preciso: grandes áreas são observadas em pouco tempo, e problemas podem ser identificados antes de se agravar. Isso ajuda a economizar recursos, cuidar melhor da plantação e aumentar a produtividade.</p>
+        </div>
+      </div>
+
+      <div class="qitem">
+        <div class="qn">03</div>
+        <div>
+          <h3>Quais são os benefícios e os desafios dos agricultores ao usar tecnologia com drones?</h3>
+          <p>Entre os benefícios estão a economia de tempo, a maior precisão no monitoramento e o melhor uso dos recursos. Entre os desafios estão o custo do equipamento, a manutenção, o treinamento necessário e o cumprimento das regras para operação dos drones.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="beneficios">
+  <div class="wrap">
+    <div class="eyebrow-row">
+      <h2>Por que isso importa para o campo</h2>
+      <span class="idx">três ganhos concretos</span>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <h3>Economia</h3>
+        <p>Uso mais eficiente de água, insumos e mão de obra a partir de dados aéreos precisos.</p>
+      </div>
+      <div class="stat">
+        <h3>Precisão</h3>
+        <p>Sensores detalham partes específicas da lavoura, não apenas uma visão geral do talhão.</p>
+      </div>
+      <div class="stat">
+        <h3>Agilidade</h3>
+        <p>Áreas extensas são observadas em muito menos tempo do que em inspeções tradicionais a pé.</p>
+      </div>
+    </div>
+
+    <div class="reveal-box">
+      <button class="btn" onclick="mostrarMensagem()">Ver a importância dos drones</button>
+      <p id="mensagem">Os drones tornam o monitoramento agrícola mais rápido, mais preciso e mais tecnológico — e colocam informação na mão de quem cuida da terra.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p><strong>Uso de Drones na Agricultura</strong> — tecnologia a serviço do campo</p>
+  <p>Projeto educacional · 2026</p>
+</footer>
+
+<script>
+  function mostrarMensagem(){
+    document.getElementById('mensagem').classList.add('show');
+  }
+</script>
+
+</body>
+</html>
